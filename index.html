@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Table JS</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="data.js"></script>
+</head>
+<body>
+<table id="table">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Phone</th>
+        <th></th>
+    </tr>
+
+    </thead>
+    <tbody id="tbody"></tbody>
+
+
+</table>
+<form class="form" id="add_form">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name"></div>
+
+    <div class="form-group">
+        <label for="age">Age</label>
+        <input type="number" id="age">
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone</label>
+        <input type="number" id="phone">
+    </div>
+    <div class="form-group favorite">
+        <input type="checkbox" id="favorite">
+        <label for="favorite">Favorite</label>
+    </div>
+    <div class="form-group">
+        <button id="add_button">Add</button>
+    </div>
+</form>
+<script>
+    const table = document.getElementById('table');
+    const tbody = document.getElementById('tbody');
+    const add_button = document.getElementById('add_button');
+    let row;
+    let editButton;
+    let actionsDiv;
+    let deleteButton;
+    let actionsCell
+    let newCell;
+    let newRow;
+    let selectedRow;
+    function addActionsDiv() {
+        actionsDiv = document.createElement('div')
+        editButton = document.createElement('button');
+        editButton.innerText = 'Edit';
+        editButton.id = 'edit_button'
+        deleteButton = document.createElement('button');
+        deleteButton.innerText = 'Delete'
+        deleteButton.id = 'delete_button'
+        actionsDiv.appendChild(editButton)
+        actionsDiv.appendChild(deleteButton)
+        actionsCell = row.insertCell();
+        actionsCell.appendChild(actionsDiv)
+        deleteButton.addEventListener('click',onDelete)
+        return actionsCell
+    }
+
+    function initTable() {
+        students.forEach((student,count) => {
+            row = document.createElement('tr');
+            row.id = count.toString();
+            Object.values(student).forEach((value, index) => {
+                console.log(value)
+                    let cell = document.createElement('td');
+                    cell.innerHTML = value;
+                    if (student.isFavorite) {
+                        cell.classList.add('isFavorite');
+                    }
+                    row.appendChild(cell);
+                    tbody.appendChild(row)
+            })
+            addActionsDiv()
+            editButton.addEventListener('click',(e)=>{
+                onEdit(e,student)
+            });
+            deleteButton.addEventListener('click',()=>{
+                onDelete(student)
+            })
+        })
+        table.appendChild(tbody)
+    }
+    initTable();
+
+    function onSubmit(e,updatedStudent) {
+        e.preventDefault();
+        console.log(selectedRow)
+        if(add_button.innerText === 'Add'){
+            let addStudent = {
+                id: students.length + 1,
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                phone: document.getElementById('phone').value,
+            }
+            let isFavorite = document.getElementById('favorite').checked
+             newRow= document.createElement('tr');
+
+            Object.values(addStudent).forEach((item) => {
+                console.log('new student', item)
+                if(addStudent.id){
+
+                }
+                newCell = document.createElement('td');
+                newCell.innerHTML = item;
+                if (isFavorite) {
+                    newCell.classList.add('isFavorite');
+                }
+                newRow.appendChild(newCell);
+
+            });
+            let buttons = addActionsDiv()
+            newRow.appendChild(buttons)
+            tbody.appendChild(newRow);
+        }else{
+            // row.innerHTML = '';
+            let updatedStudent = {
+                id: selectedRow.id,
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value,
+                phone: document.getElementById('phone').value,
+                isFavorite: document.getElementById('favorite').checked
+            }
+            let objIndex = students.findIndex((obj)=> obj.id === updatedStudent.id)
+            students[objIndex] = updatedStudent;
+            // let student = students.find((student)=> student.id === updatedStudent.id)
+            console.log('student',objIndex)
+            tbody.innerHTML = ''
+            initTable()
+
+            // Object.values(updatedStudent).forEach((item)=>{
+            //
+            //     newCell = document.createElement('td');
+            //
+            //     newCell.innerHTML = item;
+            //     row.appendChild(newCell);
+            //
+            // });
+            // let buttons = addActionsDiv();
+            // newRow.appendChild(buttons)
+            // tbody.appendChild(newRow);
+            // console.log(row.innerHTML)
+
+        }
+
+
+
+    }
+    function onEdit(e,student){
+
+            add_button.innerText = 'Update'
+            selectedRow = students.find((el)=> el.id === student.id)
+            console.log(selectedRow)
+
+            let isFavorite = document.getElementById('favorite').checked
+            document.getElementById('name').value = selectedRow.name
+            document.getElementById('age').value = selectedRow.age
+            document.getElementById('phone').value = selectedRow.phone;
+
+
+
+
+    }
+    function onDelete(student){
+        // console.log(student)
+        // students = students.filter((item)=> item === student)
+        console.log(student)
+
+
+        // students.forEach((student)=>{
+        //     tbody.innerHTML = ''
+        //         row.innerHTML = ''
+        //         row = document.createElement('tr');
+        //         // row.id = count.toString();
+        //         Object.values(student).forEach((value, index) => {
+        //             let cell = document.createElement('td');
+        //             cell.innerHTML = value;
+        //             if (student.isFavorite) {
+        //                 cell.classList.add('isFavorite');
+        //             }
+        //             row.appendChild(cell);
+        //
+        //             tbody.appendChild(row)
+        //
+        //
+        //
+        //
+        //
+        //
+        //         })
+        //         addActionsDiv()
+        //     })
+
+    }
+
+
+    document.querySelector('#add_form').addEventListener('submit', onSubmit)
+
+
+
+</script>
+</body>
+</html>
